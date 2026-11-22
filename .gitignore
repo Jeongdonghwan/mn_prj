@@ -9,3 +9,4 @@ _preview/
 source/blog_img/
 .lastmod.json
 source/home/img/
+.deploy.git/

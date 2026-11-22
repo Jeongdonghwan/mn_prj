@@ -28,9 +28,15 @@ for f in (out / 'og').glob('*.jpg'):
 print('og 정리: 지운 파일', n)
 PY
 REMOTE=$(git remote get-url origin)
-cd out
-git init -q -b deploy && git add -A
-git -c user.name="$(git -C .. config user.name)" -c user.email="$(git -C .. config user.email)" commit -q -m "deploy: ${WAVE}단계 $(date +%F)"
-git push -q -f "$REMOTE" deploy
-rm -rf .git
-echo "deploy 브랜치 갱신 완료: ${WAVE}단계, $(find . -name '*.html' | wc -l) html"
+# 바뀐 파일만 올린다 — deploy 브랜치 기록을 .deploy.git 에 남겨 두고 그 위에 커밋 (매번 새로 만들어 강제 푸시하면
+# og 이미지(압축 안 됨, 1쪽 약 56KB)까지 매일 통째로 올라가 4만 쪽 무렵 GitHub 한 번 푸시 한도 2GB 를 넘는다 — 오픈일 실측 498MB)
+GD="$PWD/.deploy.git"
+if [ ! -d "$GD" ]; then
+  git --git-dir="$GD" init -q -b deploy
+  git --git-dir="$GD" fetch -q "$REMOTE" deploy 2>/dev/null && git --git-dir="$GD" reset -q --soft FETCH_HEAD || true
+fi
+git --git-dir="$GD" --work-tree=out add -A
+git --git-dir="$GD" --work-tree=out -c user.name="$(git config user.name)" -c user.email="$(git config user.email)" \
+  commit -q -m "deploy: ${WAVE}단계 $(date +%F)" || echo "바뀐 파일 없음"
+git --git-dir="$GD" push -q "$REMOTE" deploy
+echo "deploy 브랜치 갱신 완료: ${WAVE}단계, $(find out -name '*.html' | wc -l) html"
