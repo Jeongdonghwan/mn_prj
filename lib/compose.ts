@@ -348,12 +348,16 @@ function viewFor(p: Page, P: Place, C: City, lb: string, nm: string, wl: string,
   return {
     heading: pick([`${lb}, 이런 순서로 합니다`, `${nm} ${wl}, 원인부터 확인합니다`, `${lb} 작업 방식`], s, 'vh'),
     paras: [
-      `${j(wl, '은')} ${svc.aim}입니다. ${BRAND}는 ${j(tl, '을')} 쓰고, ${svc.work}. ${pick([
+      `${pick([`${nm} ${wl} 현장에서는`, `${lb} 작업에는`, `${nm}에서도`], s, 'vb0')} ${j(tl, '을')} 씁니다. ${pick([
+        '같은 증상이라도 원인이 다르면 고치는 곳이 달라져, 장비로 확인한 다음 범위를 정합니다.',
+        '겉으로 보이는 자리와 실제 원인 자리가 다른 경우가 많아 먼저 확인합니다.',
+        '어디를 열고 무엇을 바꿀지는 확인한 결과로 정합니다.',
+      ], s, 'vb2')} ${pick([
         '여러 곳을 깨지 않고 원인 자리만 엽니다.',
         '외주 없이 직접 시공합니다.',
         '보이지 않는 부분까지 정리하고 마칩니다.',
       ], s, 'vb1')}`,
-      `${nm}에는 ${j(P.homes, '이')} 있습니다. ${CTX_LINE[cx](nm)} ${pick([
+      `${CTX_LINE[cx](nm)} ${pick([
         `그래서 ${nm} 현장은 건물 종류를 듣고 가져갈 장비를 정합니다.`,
         `${rotate(P.spots, s, 'vs')[0]} 근처 현장도 이 차이를 보고 작업 순서를 정합니다.`,
         `같은 ${C.full} 안에서도 동네마다 먼저 볼 곳이 다릅니다.`,
@@ -422,7 +426,7 @@ export function compose(p: Page): Composed {
   const descHead: Record<ModG, string> = {
     price: `${lb} ${wl} ${j(p.mod, '은')} 작업 구간·원인·자재·마감 범위로 정해집니다. 현장 확인 뒤 작업 전 안내.`,
     pick: `${lb} ${wl} ${p.mod} 고르는 기준 — 자격, 장비, 직접 시공, 원인 확인.`,
-    time: `${lb} ${wl} ${p.mod}. ${C.full} 영업지역, 통화로 일정 확인.`,
+    time: `${lb} ${wl} ${p.mod}. ${svc.short} — ${C.full} 영업지역, 일정은 통화로 맞춥니다.`,
     base: `${lb} ${wl}. ${svc.short} — 원인을 장비로 확인하고 직접 시공합니다.`,
   };
   const description = cut80(`${descHead[g]} ${CONTACT.phone}`);

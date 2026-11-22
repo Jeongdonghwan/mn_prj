@@ -49,10 +49,23 @@ export default function Home() {
   const carousel = hubs.slice(0, 30);
   const svcLink = (svc: string) => OPEN_PAGES.find((p) => inSitemap(p) && p.city === '안성' && p.service === svc && !p.mod)
     || OPEN_PAGES.find((p) => inSitemap(p) && p.service === svc);
-  const ph = (tag: string, i = 0) => (casesByTag(tag)[i] || CASES[i % Math.max(CASES.length, 1)])?.id;
-  const heroPh = ph('top', 0);
-  const gallery = CASES.filter((_, i) => i % Math.max(1, Math.floor(CASES.length / 9)) === 0).slice(0, 9);
-  const whyPh = casesByTag('누수')[0];
+  // 한 화면에 같은 사진이 두 번 나오지 않게 — 쓴 사진은 건너뛴다
+  const used = new Set<string>();
+  const ph = (tag: string) => {
+    const c = casesByTag(tag).find((x) => !used.has(x.id)) || CASES.find((x) => !used.has(x.id));
+    if (c) used.add(c.id);
+    return c?.id;
+  };
+  const heroPh = ph('top');
+  const heroPh2 = ph('top');
+  const whyId = ph('누수');
+  const whyPh = CASES.find((c) => c.id === whyId);
+  const memoId = ph('top');
+  const memoPh = CASES.find((c) => c.id === memoId);
+  const mainPh = Object.fromEntries(MAIN4.map((w) => [w.k, ph(w.k)]));
+  const prPh = PRINCIPLES.map((x) => ph(x.tag));
+
+  const gallery = CASES.filter((c) => !used.has(c.id) && c.logNo).filter((c, i, a) => a.findIndex((y) => y.logNo === c.logNo) === i).slice(0, 9);
 
   return (
     <main>
@@ -62,7 +75,7 @@ export default function Home() {
           <h1><span><i>집수리부터 난방까지</i></span><span><i>직접 시공하는 {BRAND}</i></span></h1>
           <p className="hero-lead">안성에서 가정집·상가·농장·공장의 건식 온수난방, 중대형 전기온수기, 분배기 교체·보일러 설치, 누수탐지를 합니다. 외주 없이 대표가 직접 시공합니다.</p>
           <HeroCta />
-          {ph('top', 1) && <CaseImg id={ph('top', 1)!} className="hero-ph" lazy={false} />}
+          {heroPh2 && <CaseImg id={heroPh2} className="hero-ph" lazy={false} />}
           <p className="hero-blog"><a className="btn-text" href={BLOG} target="_blank" rel="noopener noreferrer"><IconDoc /><span>블로그 시공 글 보기</span></a></p>
         </div>
         <dl className="hero-specs">
@@ -92,10 +105,10 @@ export default function Home() {
                 <li><b>다시 확인</b><span>물을 돌리고 보일러를 켜서 새는 곳과 온도를 확인합니다</span></li>
               </ol>
             </div>
-            {ph('top', 2) && (
+            {memoPh && (
               <figure className="memo-photo mask" data-reveal>
-                <CaseImg id={ph('top', 2)!} />
-                <figcaption>{CASES.find((c) => c.id === ph('top', 2))?.where} · {CASES.find((c) => c.id === ph('top', 2))?.space}</figcaption>
+                <CaseImg id={memoPh.id} />
+                <figcaption>{memoPh.where} · {memoPh.space}</figcaption>
               </figure>
             )}
           </div>
@@ -106,7 +119,7 @@ export default function Home() {
           <ol className="works">
             {MAIN4.map((w, i) => {
               const lk = svcLink(w.k);
-              const id = ph(w.k);
+              const id = mainPh[w.k];
               return (
                 <li key={w.t} data-reveal style={{ transitionDelay: `${(i % 4) * 70}ms` }}>
                   {id && <CaseImg id={id} className="works-ph" />}
@@ -128,7 +141,7 @@ export default function Home() {
       <section className="band">
         <div className="wrap">
           <SectionHead title="보유 장비" sub="최신형 고압세척 장비와 누수탐지 장비, 내시경 카메라, 배관 관로 탐지기, 열화상 카메라를 갖추고 있습니다." />
-          <ol className="tools reveal-group">{TOOLS.map((t, i) => <li key={t.name}><h3>{t.name}</h3><p>{t.d[i % 3]('현장', '작업')}</p></li>)}</ol>
+          <ol className="tools reveal-group">{TOOLS.map((t, i) => <li key={t.name}><h3>{t.name}</h3><p>{t.d[i % 3]('안성', '작업')}</p></li>)}</ol>
         </div>
       </section>
 
@@ -163,7 +176,7 @@ export default function Home() {
           <SectionHead title="점검 및 작업 절차" />
           <ol className="principles reveal-group">
             {PRINCIPLES.map((x, i) => {
-              const id = ph(x.tag, i);
+              const id = prPh[i];
               return <li key={x.t}><b className="pr-no">{String(i + 1).padStart(2, '0')}</b><div className="pr-tx"><strong>{x.t}</strong><p>{x.d}</p></div>{id && <div className="pr-ph"><CaseImg id={id} /></div>}</li>;
             })}
           </ol>
