@@ -1,0 +1,190 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { OPEN_PAGES, PLACES, getPage, pagePath, pageEncodedPath, canonicalPath, cityPath, cityEncodedPath, related } from '../../lib/data';
+import { compose } from '../../lib/compose';
+import { breadcrumbJsonLd, faqJsonLd, itemListJsonLd, serviceJsonLd } from '../../lib/jsonld';
+import { BRAND, shareMeta } from '../../lib/site';
+import { Actions, IconArrow, JsonLd, SectionHead, CaseImg, PhotoTop, pickPhoto } from '../../components/Common';
+
+export const dynamicParams = false;
+
+// 순차 오픈: lib/site.ts 의 OPEN_WAVE 이하 페이지만 생성
+export function generateStaticParams() {
+  return OPEN_PAGES.map((p) => ({ slug: p.slug }));
+}
+
+export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
+  const p = getPage(params.slug);
+  if (!p) return {};
+  const c = compose(p);
+  const url = canonicalPath(p);
+  return {
+    title: c.title,
+    description: c.description,
+    alternates: { canonical: url },
+    ...shareMeta(p.slug, `${p.kw} - ${BRAND}`, { title: c.title, description: c.description, url }),
+  };
+}
+
+const fmt = (d: string) => d.replace(/-/g, '.');
+
+export default function KeywordPage({ params }: { params: { slug: string } }) {
+  const p = getPage(params.slug);
+  if (!p) notFound();
+  const c = compose(p);
+  const P = PLACES[p.place];
+  const rel = related(p);
+  const path = pageEncodedPath(p);
+  const relList = [...rel.samePlace, ...rel.sameCity, ...rel.otherCities].map((x) => ({ name: x.kw, path: pageEncodedPath(x) }));
+  const [first, ...restWords] = p.kw.split(' ');
+  const h1b = restWords.join(' ');
+  const signPhoto = c.cases.items[1] || c.cases.items[0];
+
+  return (
+    <main>
+      <JsonLd
+        data={[
+          breadcrumbJsonLd([
+            { name: '홈', path: '/' },
+            { name: '지역', path: '/area/' },
+            { name: `${p.city} 설비`, path: cityEncodedPath(p.city) },
+            { name: p.kw, path },
+          ]),
+          serviceJsonLd({ name: p.kw, type: c.wl, description: c.description, path, area: P.admin }),
+          faqJsonLd(c.faq),
+          itemListJsonLd(relList.length ? relList : [{ name: `${p.city} 지역 안내`, path: cityEncodedPath(p.city) }]),
+        ]}
+      />
+
+      <PhotoTop photo={pickPhoto(p.slug)} className="hero">
+        <div className="hero-text">
+          <nav className="crumbs" aria-label="경로">
+            <Link href="/">홈</Link><span>/</span><Link href={`/service/${p.service}/`}>{c.svc.name}</Link><span>/</span><Link href={cityPath(p.city)}>{p.city}</Link><span>·</span><span className="crumbs-where">{c.eyebrow}</span>
+          </nav>
+          <h1><span><i>{first}</i></span>{h1b && <span><i>{h1b}</i></span>}</h1>
+          <p className="hero-lead">{c.lead}</p>
+          <Actions />
+        </div>
+      </PhotoTop>
+
+      <div className="wrap">
+        <section className="answer" aria-label="요약" data-reveal>
+          <p>{c.answer}</p>
+          <dl>{c.summary.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+        </section>
+      </div>
+
+      <div className="wrap content">
+        <section className="sec">
+          <SectionHead title={c.region.heading} />
+          <div className="cols">
+            <div className="prose" data-reveal>
+              {c.intro.map((t, i) => <p key={i} className={i === 0 ? 'first' : ''}>{t}</p>)}
+              {c.region.paras.map((t, i) => <p key={`r${i}`}>{t}</p>)}
+            </div>
+            <aside className="memo" data-reveal>
+              <h3>{P.name} 주변</h3>
+              <ol>{c.region.spots.map((h) => <li key={h}>{h}</li>)}</ol>
+              {c.region.nearby.length > 0 && <><h3>함께 안내하는 곳</h3><p>{c.region.nearby.join(' · ')}</p></>}
+            </aside>
+          </div>
+        </section>
+
+        <section className="sec mist">
+          <SectionHead title={c.view.heading} />
+          <div className="prose" data-reveal>{c.view.paras.map((t, i) => <p key={i}>{t}</p>)}</div>
+          {c.view.table && <dl className="spec" data-reveal>{c.view.table.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>}
+          {c.view.list && <>
+            <h3 className="h3-sub" data-reveal>{c.view.list.title}</h3>
+            <ol className="memo-list reveal-group">{c.view.list.items.map((x) => <li key={x}>{x}</li>)}</ol>
+          </>}
+          {c.honest && <p className="honest" data-reveal>{c.honest}</p>}
+        </section>
+
+        <section className="sec">
+          <SectionHead title={c.symptoms.heading} />
+          <div className="signs">
+            <ul className="reveal-group">{c.symptoms.items.map((x) => <li key={x}>{x}</li>)}</ul>
+            {signPhoto && <figure data-reveal className="mask">
+              <img src={`/img/${signPhoto.c.id}.webp`} alt={`${p.kw} 참고 - ${signPhoto.c.where} ${signPhoto.c.space}`} loading="lazy" width={signPhoto.c.w} height={signPhoto.c.h} />
+              <figcaption>{signPhoto.c.where} · {signPhoto.c.space}</figcaption>
+            </figure>}
+          </div>
+        </section>
+      </div>
+
+      <section className="band">
+        <div className="wrap">
+          <SectionHead title={c.tools.heading} sub={c.tools.text} />
+          <ol className="tools reveal-group">
+            {c.tools.items.map((t) => <li key={t.name}>{t.ph && <CaseImg id={t.ph} className="tools-ph" />}<h3>{t.name}</h3><p>{t.d}</p></li>)}
+          </ol>
+        </div>
+      </section>
+
+      <section className="cta-band" data-reveal>
+        <div className="wrap"><div className="cta-band-in">
+          <p>{c.cta}</p>
+          <Actions sms={false} />
+        </div></div>
+      </section>
+
+      <div className="wrap content">
+        {c.cases.items.length > 0 && <section className="sec">
+          <SectionHead title={c.cases.heading} sub={c.cases.sub} />
+          <div className="shots">
+            {c.cases.items.map(({ c: k, caption }, i) => (
+              <figure key={k.id} data-reveal style={{ transitionDelay: `${i * 80}ms` }}>
+                <div className="ph"><img src={`/img/${k.id}.webp`} alt={`${p.kw} 참고 - ${k.where} ${k.space}`} loading="lazy" width={k.w} height={k.h} /></div>
+                <figcaption><b>{fmt(k.date)} · {k.where}</b>{caption}</figcaption>
+              </figure>
+            ))}
+          </div>
+          <p className="case-note" data-reveal><Link href="/cases/" className="more">블로그 시공 사례 전체 보기 <IconArrow /></Link></p>
+        </section>}
+
+        <section className="sec mist">
+          <SectionHead title={c.stepsHeading} />
+          <ol className="flow reveal-group">
+            {c.steps.map((st) => <li key={st.title}><strong>{st.title}</strong><p>{st.text}</p></li>)}
+          </ol>
+        </section>
+
+        <section className="sec">
+          <SectionHead title={`${P.name} 상담 안내`} />
+          <dl className="info" data-reveal>{c.info.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+        </section>
+
+        <section className="sec mist" id="faq">
+          <SectionHead title="자주 묻는 질문" />
+          <div className="faq">
+            {c.faq.map((f) => <details key={f.q} data-reveal><summary>{f.q}<i /></summary><p>{f.a}</p></details>)}
+          </div>
+        </section>
+
+        <section className="sec">
+          <SectionHead title={`${p.kw} 관련 안내`} />
+          <div className="related">
+            {rel.samePlace.length > 0 && <div><h3>{P.name} 다른 안내</h3><ul>{rel.samePlace.map((x) => <li key={x.slug}><Link href={pagePath(x)}>{x.kw}<IconArrow /></Link></li>)}</ul></div>}
+            {rel.sameCity.length > 0 && <div><h3>{p.city} 다른 동네</h3><ul>{rel.sameCity.map((x) => <li key={x.slug}><Link href={pagePath(x)}>{x.kw}<IconArrow /></Link></li>)}</ul></div>}
+            <div><h3>다른 시·군</h3><ul>
+              {rel.otherCities.map((x) => <li key={x.slug}><Link href={pagePath(x)}>{x.kw}<IconArrow /></Link></li>)}
+              <li><Link href={cityPath(p.city)}>{p.city} 지역 안내 전체<IconArrow /></Link></li>
+              <li><Link href={`/service/${p.service}/`}>{c.svc.name} 안내<IconArrow /></Link></li>
+              <li><Link href="/qna/">자주 묻는 질문<IconArrow /></Link></li>
+            </ul></div>
+          </div>
+        </section>
+      </div>
+
+      <section className="closing">
+        <div className="wrap" data-reveal>
+          <h2>{c.closing.heading}</h2>
+          <p>{c.closing.text}</p>
+          <Actions blog />
+        </div>
+      </section>
+    </main>
+  );
+}
