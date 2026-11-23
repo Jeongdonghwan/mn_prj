@@ -3,9 +3,9 @@
 //   장비: 고압세척 장비, 누수탐지기(청음식·가스식), 열화상 카메라, 하수관 내시경 카메라, 배관 관로 탐지기 (+ 전동스프링)
 //   자격: 전문기능사 자격 보유 전문면허 사업체, 가스보일러 시공 자격(한국열관리시공협회 회원). 외주 없이 직접 시공.
 //   가격·건수·경력 연수·보증 기간·만족도 숫자는 쓰지 않는다. 24시간·당일 출동 약속도 쓰지 않는다(근거 없음).
-import { Page, Place, City, Case, PLACES, CITIES, ALL_PAGES, seedOf, rotate, casesFor } from './data';
+import { Page, Place, City, Case, PLACES, CITIES, ALL_PAGES, seedOf, rotate, casesFor, related } from './data';
 import { BRAND, CONTACT } from './site';
-import { j } from './ko';
+import { j, josa } from './ko';
 
 const pick = <T,>(arr: T[], seed: string, salt: string): T => arr[seedOf(`${seed}::${salt}`) % arr.length];
 
@@ -293,9 +293,9 @@ function viewFor(p: Page, P: Place, C: City, lb: string, nm: string, wl: string,
       heading: pick([`${lb} ${wl} ${m}, 이렇게 정해집니다`, `${nm} ${wl} ${j(m, '이')} 달라지는 기준`, `${lb} ${wl} ${m} 안내 전에 보는 것`], s, 'vh'),
       paras: [
         pick([
-          `${lb} ${wl} ${j(m, '은')} 정해진 단가표로 말씀드리기 어렵습니다. 같은 ${wl}이라도 ${nm} 현장마다 작업 구간과 자재, 공사 범위가 다르기 때문입니다. ${BRAND}는 현장을 본 뒤 작업 전에 먼저 안내합니다.`,
+          `${lb} ${wl} ${j(m, '은')} 정해진 단가표로 말씀드리기 어렵습니다. 같은 ${j(wl, '이')}라도 ${nm} 현장마다 작업 구간과 자재, 공사 범위가 다르기 때문입니다. ${BRAND}는 현장을 본 뒤 작업 전에 먼저 안내합니다.`,
           `${nm} ${wl} ${j(m, '은')} '어디까지, 무엇으로 하느냐'로 정해집니다. 원인을 먼저 찾고 필요한 부분만 공사하면 범위가 줄어듭니다.`,
-          `전화로 금액부터 물으시는 분이 많지만, ${wl}은 원인을 모르고 정한 금액이 나중에 바뀌기 쉽습니다. ${nm} 현장도 원인을 확인한 뒤 작업 범위와 함께 말씀드립니다.`,
+          `전화로 금액부터 물으시는 분이 많지만, ${j(wl, '은')} 원인을 모르고 정한 금액이 나중에 바뀌기 쉽습니다. ${nm} 현장도 원인을 확인한 뒤 작업 범위와 함께 말씀드립니다.`,
         ], s, 'vp1'),
         `${nm}에는 ${j(P.homes, '이')} 있습니다. ${CTX_LINE[cx](nm)}`,
       ],
@@ -312,8 +312,8 @@ function viewFor(p: Page, P: Place, C: City, lb: string, nm: string, wl: string,
     return {
       heading: pick([`${lb} ${wl} ${m}, 이것부터 물어보세요`, `${nm}에서 ${wl} ${m} 고르는 기준`, `${lb} ${wl} ${m} 비교표`], s, 'vh'),
       paras: [
-        `${wl}은 한 번에 원인을 잡지 못하면 같은 공사를 여러 번 하게 됩니다. ${nm} 현장(${P.homes})에서 업체를 고를 때 물어볼 것을 정리했습니다. 오른쪽 칸은 ${BRAND}의 방식입니다.`,
-        `${CTX_LINE[cx](nm)} 이런 현장일수록 원인을 장비로 확인하는지, 직접 시공하는지가 차이를 만듭니다.`,
+        `${nm} ${j(wl, '은')} 한 번에 원인을 잡지 못하면 같은 공사를 여러 번 하게 됩니다. ${nm} 현장(${P.homes})에서 업체를 고를 때 물어볼 것을 정리했습니다. 오른쪽 칸은 ${BRAND}의 방식입니다.`,
+        `${CTX_LINE[cx](nm)} 이런 ${nm} 현장일수록 원인을 장비로 확인하는지, 직접 시공하는지가 차이를 만듭니다.`,
       ],
       table: [
         ['자격이 있나', '전문기능사 자격을 가진 전문면허 사업체, 가스보일러는 시공 자격이 있는 한국열관리시공협회 회원'],
@@ -400,7 +400,6 @@ function nearNames(P: Place): string[] {
   return nearCache.get(k)!;
 }
 
-const cut80 = (t: string) => (t.length <= 80 ? t : t.slice(0, 79).replace(/[ ,·]+[^ ,·]*$/, '') + '…');
 
 export function compose(p: Page): Composed {
   const P = PLACES[p.place];
@@ -423,13 +422,7 @@ export function compose(p: Page): Composed {
     `${p.kw} - 원인부터 찾는 ${BRAND}`,
     `${p.kw} | 직접 시공 ${BRAND}`,
   ], s, 'title');
-  const descHead: Record<ModG, string> = {
-    price: `${lb} ${wl} ${j(p.mod, '은')} 작업 구간·원인·자재·마감 범위로 정해집니다. 현장 확인 뒤 작업 전 안내.`,
-    pick: `${lb} ${wl} ${p.mod} 고르는 기준 — 자격, 장비, 직접 시공, 원인 확인.`,
-    time: `${lb} ${wl} ${p.mod}. ${svc.short} — ${C.full} 영업지역, 일정은 통화로 맞춥니다.`,
-    base: `${lb} ${wl}. ${svc.short} — 원인을 장비로 확인하고 직접 시공합니다.`,
-  };
-  const description = cut80(`${descHead[g]} ${CONTACT.phone}`);
+  const description = desc80(p, wl, P); // 2026-11-24: 45~80자
 
   const eyebrow = P.kind === '시군' ? C.full : P.admin;
   const lead = pick(g === 'price' ? [
@@ -562,4 +555,138 @@ export function compose(p: Page): Composed {
     title, description, h1: p.kw, eyebrow, lead, label: lb, wl, answer, summary, heroCase: picked[0], intro, region, view,
     symptoms, tools, cases, steps, stepsHeading: `${lb} 진행 순서`, info, faq, closing, cta, svc,
   };
+}
+
+// ---- 레이 모범 구조 (2026-11-24) — 분류 줄 → h1(키워드+수식어) → 설명 → 핵심 요약 → 번호 절 6개(한 문단) → FAQ → 관련 링크 ----
+// 절 본문은 문장 후보를 슬러그 해시 순서로 이어 붙여 한 문단(공백 제외 230~250자 목표)으로 만든다. 사실은 위 compose 재료(FACTS.md 근거)만 쓴다.
+const shuffle = <T,>(arr: T[], s: string, salt: string) => arr.map((x, i) => [seedOf(`${s}::${salt}::${i}`), x] as [number, T]).sort((a, b) => a[0] - b[0]).map((x) => x[1]);
+const nsp = (t: string) => t.replace(/\s/g, '').length;
+function para(first: string[], rest: string[], s: string, salt: string, keep = false): string {
+  const out = [pick(first, s, `${salt}f`)];
+  let n = nsp(out[0]);
+  for (const x of keep ? rest : shuffle(rest, s, salt)) {
+    if (n >= 225) break;
+    if (n + nsp(x) > 275) continue;
+    out.push(x); n += nsp(x);
+  }
+  return out.join(' ');
+}
+const KW_AT = new Set([0, 1, 2, 5]); // 절 6개 중 4개 h2 에 키워드 전체
+
+export function ray(p: Page) {
+  const c = compose(p);
+  const P = PLACES[p.place];
+  const C = CITIES[p.city];
+  const svc = SVC[p.service];
+  const s = p.slug;
+  const nm = P.name;
+  const wl = c.wl;
+  const m = p.mod;
+  const g = modGroup(m);
+  const cx = ctxOf(P);
+  const cn = CTX_NOUN[cx];
+  const causes = rotate(svc.causes, s, 'rc');
+  const syms = shuffle(svc.symptoms, s, 'rs');
+  const toolNames = svc.tools.slice(0, 3).map((i) => TOOLS[i].name);
+  const words = [p.label, nm, p.city, ...nm.split(' ')].filter((x) => x.length >= 2);
+  const spot = rotate(P.spots, s, 'h1spot').find((x) => !words.some((w) => x.includes(w)));
+  const home = P.homes.split(',')[0].trim();
+  const head = (i: number, sub: string) => (KW_AT.has(i) ? `${p.kw}${i % 2 ? ' — ' : ': '}${sub}` : sub);
+
+  const h1sub = pick(({
+    price: [`작업 구간·원인으로 정하는 금액`, `작업 전에 먼저 듣는 금액 기준`, `${cn} ${svc.name} 금액이 달라지는 이유`, ...(spot ? [`${spot} 주변 현장 금액 안내`] : [])],
+    pick: [`자격·장비·직접 시공으로 고르기`, `원인 확인과 직접 시공으로 고르기`, `${cn} ${svc.name} 업체 고르는 기준`, ...(spot ? [`${spot} 주변 업체 비교 기준`] : [])],
+    time: [`통화로 증상 듣고 일정 맞추기`, `사진 먼저 보내고 일정 잡기`, `${cn} ${svc.name} 출장 전 확인할 것`, ...(spot ? [`${spot} 주변 출장 일정 안내`] : [])],
+    base: [`${svc.name} 원인부터 확인하는 순서`, `원인 찾고 필요한 곳만 시공`, `${home}에 맞춘 작업 순서`, ...(spot ? [`${spot} 주변 현장 작업 순서`] : [])],
+  } as Record<ModG, string[]>)[g], s, 'h1sub');
+
+  const ans = g === 'base' ? `${j(p.kw, '은')} ${nm} 현장에서 원인을 장비로 먼저 확인한 뒤, 대표가 외주 없이 필요한 곳만 직접 시공하는 방식으로 진행합니다.` : c.answer;
+  const summary = [ans, `${j(nm, '은')} ${BRAND}가 영업지역으로 적어 둔 ${C.full} 안에 있고, 일정은 통화로 정합니다.`, pick([
+    `금액은 ${nm} 현장에서 원인과 작업 범위를 확인한 뒤 작업 전에 말씀드립니다.`,
+    `여러 곳을 깨지 않고 원인 자리만 여는 것이 원칙이며, ${nm} 현장도 같습니다.`,
+  ], s, 'sum')].join(' ');
+
+  const S1 = {
+    sub: pick([`원인과 작업 범위`, `무엇을 고치고 어디까지 보나`, `원인부터 찾는 이유`], s, 's1'),
+    p: para([`${nm}에서 말하는 ${j(wl, '은')} ${svc.aim}입니다.`, `${nm} 현장의 ${j(wl, '은')} ${svc.aim}입니다.`],
+      [`${nm} ${wl} 문의에서 자주 보는 원인·사정은 '${causes.slice(0, 3).join("', '")}'입니다.`,
+        `${nm} 현장에서는 ${svc.work}.`,
+        `${BRAND}는 ${toolNames.join('·')} 가운데 ${nm} 현장에 맞는 장비를 고릅니다.`,
+        `겉으로 보이는 증상만 손보면 같은 문제가 다시 생기기 때문에, ${nm} 현장도 '${causes[0]}' 같은 사정부터 확인합니다.`,
+      ], s, 's1p'),
+  };
+  const S2 = {
+    sub: pick([`${nm} 건물과 설비 사정`, `동네 건물마다 다른 먼저 볼 곳`, `${cn} 구조에서 먼저 볼 곳`], s, 's2'),
+    p: para([c.region.paras[0]],
+      [CTX_LINE[cx](nm), c.region.paras[1], ...(P.kind === '시군' ? [`${j(C.full, '은')} ${C.traits}입니다.`] : [])].filter((x) => x && !c.region.paras[0].includes(x)), s, 's2p'),
+  };
+  const S3 = {
+    sub: pick([`이런 증상이면 연락하세요`, `먼저 보이는 신호`, `${cn}에서 의심할 때`], s, 's3'),
+    p: para([`${nm} ${cn}에서 가장 흔한 신호는 '${syms[0]}'입니다.`, `${nm}에서 ${wl} 문의가 들어오는 첫 신호는 대개 '${syms[0]}'입니다.`],
+      [`${nm}에서는 '${syms[1]}', '${syms[2]}' 같은 증상도 같은 원인에서 나옵니다.`,
+        `'${syms[3]}' 같은 경우도 ${nm} 현장에 원인이 따로 남아 있다는 뜻입니다.`,
+        `이럴 때 겉만 손보거나 여러 곳을 한꺼번에 뜯기보다, ${nm} ${wl} 현장도 원인 자리부터 확인하는 편이 빠릅니다.`,
+        `문제 부위 사진을 ${CONTACT.phone}로 보내 주시면 ${nm} 현장에 가져갈 장비를 미리 챙깁니다.`,
+        `증상이 커지기 전에 보면 ${nm} 현장 작업 범위도 줄어드는 경우가 많습니다.`], s, 's3p', true),
+  };
+  const S4 = {
+    sub: pick([`현장에 가져가는 장비`, `${wl}에 쓰는 장비`, `장비와 쓰는 순서`], s, 's4'),
+    p: para([`${nm} ${wl} 현장에는 ${j(c.tools.items[0].name, '과')} ${c.tools.items[1].name}부터 가져갑니다.`, `${p.label} 현장 장비는 ${j(c.tools.items[0].name, '이')} 먼저입니다.`],
+      c.tools.items.map((t) => `${t.name}${josa(t.name.replace(/\(.*?\)/g, ''), '은')} ${t.d}.`), s, 's4p', true),
+  };
+  const steps = c.steps;
+  const LINK = ['', '이어서', '그다음', '그리고', '마지막으로'];
+  const S5 = {
+    sub: pick([`진행 순서`, `현장에서 하는 일, 순서대로`, `확인부터 마감까지`], s, 's5'),
+    p: para([steps[0].text], steps.slice(1).map((x, i) => `${LINK[i + 1]} ${x.text.includes(nm) ? '' : `${nm} 현장에서는 `}${x.text}`), s, 's5p', true),
+  };
+  const v = c.view;
+  const tail: Record<ModG, string[]> = {
+    price: [`${nm} ${wl} 금액을 가르는 것은 작업 구간, 원인, 쓰는 장비, 자재, 마감 범위입니다.`, `자재는 ${svc.short} 가운데 ${nm} 현장에 쓰는 제품과 용량·크기에 따라 달라집니다.`],
+    pick: [`${nm}에서 ${wl} 업체를 비교할 때 물어볼 것은 자격이 있는지, 장비를 갖췄는지, 외주 없이 직접 하는지, 원인을 찾는지입니다.`, `${BRAND}는 전문기능사 자격을 가진 전문면허 사업체이고, ${nm} 현장도 대표가 외주 없이 직접 시공합니다.`],
+    time: [`통화 때 ${nm} 건물 종류와 층수, 문제가 시작된 때와 자리, 다른 업체가 다녀갔는지를 알려 주시면 준비가 빨라집니다.`],
+    base: [],
+  };
+  const S6 = {
+    sub: ({
+      price: pick([`${j(m, '이')} 정해지는 기준`, `금액이 달라지는 이유`], s, 's6'),
+      pick: pick([`업체 고르는 기준`, `${m} 비교할 때 물어볼 것`], s, 's6'),
+      time: pick([`연락 전 확인할 것`, `${m} 문의, 이렇게 진행합니다`], s, 's6'),
+      base: pick([`작업 원칙과 시공 기록`, `직접 시공과 블로그 기록`], s, 's6'),
+    } as Record<ModG, string>)[g],
+    p: g === 'base'
+      ? para([`${BRAND}는 전문기능사 자격을 가진 전문면허 사업체로, ${nm} ${wl} 현장도 대표가 외주 없이 직접 시공합니다.`, `${nm} ${wl} 현장도 원인을 장비로 확인한 뒤 대표가 직접 시공합니다.`],
+        [`블로그에 남은 ${svc.name} 현장은 ${svc.cases}입니다.`,
+          `여러 곳을 깨지 않고 원인 자리만 여는 것이 원칙이라, ${nm} 현장도 깨는 범위를 줄이도록 진행합니다.`,
+          `난방·설비·누수·집수리를 한 곳에서 하므로 ${nm} 현장에서 다른 문제가 함께 보이면 같이 말씀드립니다.`,
+          `금액은 ${nm} 현장을 본 뒤 작업 전에 먼저 안내합니다.`], s, 's6b')
+      : para([v.paras[0].replace(/ 오른쪽 칸은 [^.]*\./, '')], [v.paras[1], ...tail[g]], s, 's6p', true),
+  };
+  const sections = [S1, S2, S3, S4, S5, S6].map((x, i) => ({ h: head(i, x.sub), p: x.p }));
+  return { c, cat: `${c.eyebrow} · ${wl}`, h1sub, lead: c.lead, summary, facts: c.summary, sections, faq: c.faq.slice(0, 4) };
+}
+
+// description 45~80자(2026-11-24, composer-patterns §5-3): 키워드 → 이 페이지 관련 링크에 실제로 있는 다른 시공 2~3개 → 페이지 사실 하나 → 상담 전화.
+// 80자를 넘으면 사실 문장 → 관련 키워드 수 순서로 줄인다(글자 중간에서 자르지 않음).
+function desc80(p: Page, wl: string, P: Place): string {
+  const r = related(p);
+  const norm = (w: string) => w.replace('씽', '싱');
+  const rels: string[] = [];
+  for (const x of [...r.samePlace.slice(0, 5), ...r.sameCity.slice(0, 5)]) {
+    const w = WORD_LABEL[x.word] || x.word;
+    if ([wl, ...rels].some((y) => norm(y).includes(norm(w)) || norm(w).includes(norm(y)))) continue; // 같은 말·겹치는 말 빼기
+    rels.push(w);
+  }
+  const home = P.homes.split(',')[0].trim();
+  const facts = [
+    pick([`${home}도 원인 확인 뒤 직접 시공합니다.`, `${home} 현장도 외주 없이 직접 합니다.`], p.slug, 'df'),
+    `외주 없이 대표가 직접 시공.`,
+    `직접 시공.`,
+  ];
+  const tail = `상담 ${CONTACT.phone}`;
+  for (let n = Math.min(3, rels.length); n >= 0; n--) {
+    const head = n ? `${p.kw} — ${rels.slice(0, n).join('·')}도 함께 합니다.` : `${p.kw} — 원인을 장비로 찾고 고칩니다.`;
+    for (const f of facts) { const d = `${head} ${f} ${tail}`; if (d.length <= 80) return d; }
+  }
+  return `${p.kw} — 직접 시공. ${tail}`;
 }
