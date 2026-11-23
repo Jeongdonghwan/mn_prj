@@ -48,5 +48,5 @@ export const shareMeta = (key: string, alt: string, o: { title?: string; descrip
 };
 
 // 서치어드바이저(네이버)·서치콘솔(구글) HTML 태그 소유확인 — content 값만 (도메인 등록 뒤 받기)
-export const NAVER_VERIFY = '';
-export const GOOGLE_VERIFY = '';
+export const NAVER_VERIFY = '0505457f05be813c31f37854fb9c258ae828df1d';
+export const GOOGLE_VERIFY = 'N9cl4tCn3hQdxm7a-RTdi-fEJM3z-41AwFxudYiBFNQ';
