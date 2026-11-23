@@ -8,7 +8,7 @@ import { BRAND, CONTACT, BLOG, SHOP, INSTAGRAM, shareMeta, tel } from '../lib/si
 import { faqJsonLd, itemListJsonLd, businessJsonLd } from '../lib/jsonld';
 import { Actions, CaseImg, HeroCta, IconArrow, IconDoc, IconFaucet, IconPhone, JsonLd, PhotoTop, SectionHead, casesByTag, pickPhoto } from '../components/Common';
 
-const HOME_TITLE = `${BRAND} | 건식난방·전기온수기·누수탐지·집수리 안성`;
+const HOME_TITLE = `${BRAND} | 건식난방·전기온수기·누수탐지·집수리`;
 const HOME_DESC = '안성·평택·천안·아산·진천·음성 건식 온수난방, 중대형 전기온수기, 분배기·보일러, 누수탐지, 집수리. 직접 시공.';
 export const metadata: Metadata = {
   title: HOME_TITLE,
