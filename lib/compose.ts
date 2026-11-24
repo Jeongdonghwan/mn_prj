@@ -611,7 +611,8 @@ export function ray(p: Page) {
     time: [`통화로 증상 듣고 일정 맞추기`, `사진 먼저 보내고 일정 잡기`, `${cn} ${svc.name} 출장 전 확인할 것`, ...(spot ? [`${spot} 주변 출장 일정 안내`] : [])],
     base: [`${svc.name} 원인부터 확인하는 순서`, `원인 찾고 필요한 곳만 시공`, `${home}에 맞춘 작업 순서`, ...(spot ? [`${spot} 주변 현장 작업 순서`] : [])],
   } as Record<ModG, string[]>)[g], s);
-  const title = `${p.kw} ${h1sub} | ${BRAND}`; // h1 과 같은 글자 + 상호 한 번
+  const front = `${p.kw} ${h1sub}`; // h1 과 같은 글자
+  const title = `${front} | ${BRAND}`.length <= 40 ? `${front} | ${BRAND}` : front; // 네이버 권장 40자: 넘으면 상호를 뺀다(og:site_name 에 상호가 있다)
 
   const ans = g === 'base' ? `${j(p.kw, '은')} ${nm} 현장에서 원인을 장비로 먼저 확인한 뒤, 대표가 외주 없이 필요한 곳만 직접 시공하는 방식으로 진행합니다.` : c.answer;
   const summary = [ans, `${j(nm, '은')} ${BRAND}가 영업지역으로 적어 둔 ${C.full} 안에 있고, 일정은 통화로 정합니다.`, pick([
