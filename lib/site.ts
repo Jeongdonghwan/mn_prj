@@ -31,7 +31,7 @@ export const BUSINESS = {
 //   오픈일 8,000 → 다음 날부터 하루 1,000 (사용자 결정 2026-11-22) — data/drip.json, scripts/build_pages.py
 export const OPEN_WAVE = Number(process.env.OPEN_WAVE || 1);
 
-export const UPDATED = '2026-11-22'; // content revision date - bump when page text changes
+export const UPDATED = '2026-11-24'; // content revision date - bump when page text changes
 export const MERGE_VARIANTS = true;
 
 export const tel = `tel:${CONTACT.phone.replace(/[^0-9]/g, '')}`;
