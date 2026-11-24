@@ -573,6 +573,18 @@ function para(first: string[], rest: string[], s: string, salt: string, keep = f
 }
 const KW_AT = new Set([0, 1, 2, 5]); // 절 6개 중 4개 h2 에 키워드 전체
 
+// title·h1 공용 수식어(2026-11-24): "키워드 수식어" 가 40자를 넘으면 더 짧은 벌을 고르고, 그래도 넘으면 수식어를 낱말 단위로 줄인다.
+function fitSub(kw: string, arr: string[], s: string): string {
+  const ok = (x: string) => kw.length + 1 + x.length <= 40;
+  const first = pick(arr, s, 'h1sub');
+  if (ok(first)) return first;
+  const fits = arr.filter(ok);
+  if (fits.length) return pick(fits, s, 'h1sub2');
+  const w = [...arr].sort((a, b) => a.length - b.length)[0].split(' ');
+  while (w.length > 1 && !ok(w.join(' '))) w.pop();
+  return w.join(' ');
+}
+
 export function ray(p: Page) {
   const c = compose(p);
   const P = PLACES[p.place];
@@ -593,12 +605,13 @@ export function ray(p: Page) {
   const home = P.homes.split(',')[0].trim();
   const head = (i: number, sub: string) => (KW_AT.has(i) ? `${p.kw}${i % 2 ? ' — ' : ': '}${sub}` : sub);
 
-  const h1sub = pick(({
+  const h1sub = fitSub(p.kw, ({
     price: [`작업 구간·원인으로 정하는 금액`, `작업 전에 먼저 듣는 금액 기준`, `${cn} ${svc.name} 금액이 달라지는 이유`, ...(spot ? [`${spot} 주변 현장 금액 안내`] : [])],
     pick: [`자격·장비·직접 시공으로 고르기`, `원인 확인과 직접 시공으로 고르기`, `${cn} ${svc.name} 업체 고르는 기준`, ...(spot ? [`${spot} 주변 업체 비교 기준`] : [])],
     time: [`통화로 증상 듣고 일정 맞추기`, `사진 먼저 보내고 일정 잡기`, `${cn} ${svc.name} 출장 전 확인할 것`, ...(spot ? [`${spot} 주변 출장 일정 안내`] : [])],
     base: [`${svc.name} 원인부터 확인하는 순서`, `원인 찾고 필요한 곳만 시공`, `${home}에 맞춘 작업 순서`, ...(spot ? [`${spot} 주변 현장 작업 순서`] : [])],
-  } as Record<ModG, string[]>)[g], s, 'h1sub');
+  } as Record<ModG, string[]>)[g], s);
+  const title = `${p.kw} ${h1sub} | ${BRAND}`; // h1 과 같은 글자 + 상호 한 번
 
   const ans = g === 'base' ? `${j(p.kw, '은')} ${nm} 현장에서 원인을 장비로 먼저 확인한 뒤, 대표가 외주 없이 필요한 곳만 직접 시공하는 방식으로 진행합니다.` : c.answer;
   const summary = [ans, `${j(nm, '은')} ${BRAND}가 영업지역으로 적어 둔 ${C.full} 안에 있고, 일정은 통화로 정합니다.`, pick([
@@ -663,7 +676,7 @@ export function ray(p: Page) {
       : para([v.paras[0].replace(/ 오른쪽 칸은 [^.]*\./, '')], [v.paras[1], ...tail[g]], s, 's6p', true),
   };
   const sections = [S1, S2, S3, S4, S5, S6].map((x, i) => ({ h: head(i, x.sub), p: x.p }));
-  return { c, cat: `${c.eyebrow} · ${wl}`, h1sub, lead: c.lead, summary, facts: c.summary, sections, faq: c.faq.slice(0, 4) };
+  return { c, title, cat: `${c.eyebrow} · ${wl}`, h1sub, lead: c.lead, summary, facts: c.summary, sections, faq: c.faq.slice(0, 4) };
 }
 
 // description 45~80자(2026-11-24, composer-patterns §5-3): 키워드 → 이 페이지 관련 링크에 실제로 있는 다른 시공 2~3개 → 페이지 사실 하나 → 상담 전화.
