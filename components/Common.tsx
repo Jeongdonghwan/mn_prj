@@ -39,6 +39,10 @@ export const CaseImg = ({ id, className, lazy = true }: { id: string; className?
   if (!k) return null;
   return <img src={`/img/${id}.webp`} className={className} alt={`${BRAND} 시공 사진 - ${k.where} ${k.space}`} width={k.w} height={k.h} loading={lazy ? 'lazy' : undefined} />;
 };
+// 장비 카드 그림 — 실제 사진(w###)이면 시공 사진, 아니면 사진이 없는 장비의 그래픽 카드(public/img/tool-*.webp)
+export const ToolImg = ({ ph, name }: { ph: string; name: string }) => ph.startsWith('w')
+  ? <CaseImg id={ph} className="tools-ph" />
+  : ph ? <img src={`/img/${ph}.webp`} className="tools-ph" alt={`${BRAND} 보유 장비 - ${name}`} width={1200} height={900} loading="lazy" /> : null;
 // 태그로 사진 고르기 (tags = 서비스 키 또는 'top'·'tool')
 export const casesByTag = (tag: string, n = 99): Case[] => CASES.filter((c) => c.tags.includes(tag)).slice(0, n);
 

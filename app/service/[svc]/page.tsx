@@ -6,7 +6,7 @@ import { OPEN_PAGES, CITIES, inSitemap, pagePath, pageEncodedPath, openCities } 
 import { getQnas, qnaPath } from '../../../lib/qna';
 import { getPosts, postPath } from '../../../lib/blog';
 import { breadcrumbJsonLd, faqJsonLd, itemListJsonLd, serviceJsonLd } from '../../../lib/jsonld';
-import { Actions, CaseImg, IconArrow, JsonLd, PhotoTop, SectionHead, casesByTag, pickPhoto } from '../../../components/Common';
+import { Actions, CaseImg, IconArrow, JsonLd, PhotoTop, SectionHead, casesByTag, pickPhoto, ToolImg } from '../../../components/Common';
 import { BRAND, shareMeta } from '../../../lib/site';
 
 export const dynamicParams = false;
@@ -65,7 +65,7 @@ export default function ServicePage({ params }: { params: { svc: string } }) {
         </section>
         <section className="sec">
           <SectionHead title="쓰는 장비" />
-          <ol className="tools reveal-group">{v.tools.map((i) => <li key={i}><h3>{TOOLS[i].name}</h3><p>{TOOLS[i].d[0]('현장', v.name)}</p></li>)}</ol>
+          <ol className="tools reveal-group">{v.tools.map((i) => <li key={i}><ToolImg ph={TOOLS[i].ph} name={TOOLS[i].name} /><h3>{TOOLS[i].name}</h3><p>{TOOLS[i].d[0]('현장', v.name)}</p></li>)}</ol>
         </section>
         {photos.length > 0 && (
           <section className="sec">

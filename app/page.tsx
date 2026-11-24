@@ -6,7 +6,7 @@ import { getPosts, postPath } from '../lib/blog';
 import { getQnas, qnaPath } from '../lib/qna';
 import { BRAND, CONTACT, BLOG, SHOP, INSTAGRAM, shareMeta, tel } from '../lib/site';
 import { faqJsonLd, itemListJsonLd, businessJsonLd } from '../lib/jsonld';
-import { Actions, CaseImg, HeroCta, IconArrow, IconDoc, IconFaucet, IconPhone, JsonLd, PhotoTop, SectionHead, casesByTag, pickPhoto } from '../components/Common';
+import { Actions, CaseImg, HeroCta, ToolImg, IconArrow, IconDoc, IconFaucet, IconPhone, JsonLd, PhotoTop, SectionHead, casesByTag, pickPhoto } from '../components/Common';
 
 const HOME_TITLE = `${BRAND} | 건식난방·전기온수기·누수탐지·집수리`;
 const HOME_DESC = '안성·평택·천안·아산·진천·음성 건식 온수난방, 중대형 전기온수기, 분배기·보일러, 누수탐지, 집수리. 직접 시공.';
@@ -34,11 +34,11 @@ const FAQ = [
 ];
 
 const PRINCIPLES = [
-  { t: '대표 직접 방문', d: '상담부터 현장 점검과 마무리까지 외주 없이 직접 합니다.', tag: 'top' },
-  { t: '장비로 원인 확인', d: '누수탐지기·열화상 카메라·내시경으로 원인 자리를 먼저 찾습니다.', tag: '누수' },
-  { t: '필요한 곳만 작업', d: '여러 곳을 깨지 않고 원인 구간만 열어 고칩니다.', tag: '배관' },
-  { t: '보이지 않는 곳까지', d: '배관·방수처럼 속에 들어가는 일을 먼저 바로잡고 마감합니다.', tag: '욕실' },
-  { t: '작업 후 다시 확인', d: '물을 돌리고 보일러를 켜서 새는 곳과 온도를 다시 확인합니다.', tag: '난방' },
+  { t: '대표 직접 방문', d: '상담부터 현장 점검과 마무리까지 외주 없이 직접 합니다.', id: 'w029' },
+  { t: '장비로 원인 확인', d: '누수탐지기·열화상 카메라·내시경으로 원인 자리를 먼저 찾습니다.', id: 'w055' },
+  { t: '필요한 곳만 작업', d: '여러 곳을 깨지 않고 원인 구간만 열어 고칩니다.', id: 'w089' },
+  { t: '보이지 않는 곳까지', d: '배관·방수처럼 속에 들어가는 일을 먼저 바로잡고 마감합니다.', id: 'w194' },
+  { t: '작업 후 다시 확인', d: '물을 돌리고 보일러를 켜서 새는 곳과 온도를 다시 확인합니다.', id: 'w148' },
 ];
 
 export default function Home() {
@@ -56,14 +56,16 @@ export default function Home() {
     if (c) used.add(c.id);
     return c?.id;
   };
-  const heroPh = ph('top');
-  const heroPh2 = ph('top');
+  // 화면 자리마다 맞는 사진을 고정(사진 내용과 글이 어긋나지 않게) — 보정본은 scripts/enhance_photos.py
+  ['w003', 'w201', 'w063', 'w202', ...PRINCIPLES.map((x) => x.id)].forEach((id) => used.add(id));
+  const heroPh = 'w003';
+  const heroPh2 = 'w003'; // 모바일 상단 사진(데스크톱은 배경)
   const whyId = ph('누수');
   const whyPh = CASES.find((c) => c.id === whyId);
   const memoId = ph('top');
   const memoPh = CASES.find((c) => c.id === memoId);
   const mainPh = Object.fromEntries(MAIN4.map((w) => [w.k, ph(w.k)]));
-  const prPh = PRINCIPLES.map((x) => ph(x.tag));
+  const prPh = PRINCIPLES.map((x) => x.id);
 
   const gallery = CASES.filter((c) => !used.has(c.id) && c.logNo).filter((c, i, a) => a.findIndex((y) => y.logNo === c.logNo) === i).slice(0, 9);
 
@@ -141,7 +143,7 @@ export default function Home() {
       <section className="band">
         <div className="wrap">
           <SectionHead title="보유 장비" sub="최신형 고압세척 장비와 누수탐지 장비, 내시경 카메라, 배관 관로 탐지기, 열화상 카메라를 갖추고 있습니다." />
-          <ol className="tools reveal-group">{TOOLS.map((t, i) => <li key={t.name}><h3>{t.name}</h3><p>{t.d[i % 3]('안성', '작업')}</p></li>)}</ol>
+          <ol className="tools reveal-group">{TOOLS.map((t, i) => <li key={t.name}><ToolImg ph={t.ph} name={t.name} /><h3>{t.name}</h3><p>{t.d[i % 3]('안성', '작업')}</p></li>)}</ol>
         </div>
       </section>
 
