@@ -65,6 +65,11 @@
 - [음성군 건식난방 난방 시공 원인부터 확인하는 순서 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/%EC%9D%8C%EC%84%B1%EA%B5%B0-%EA%B1%B4%EC%8B%9D%EB%82%9C%EB%B0%A9/)
 
 ## 최근 글
+- [공장 하수구 막힘 해결 순서, 여러 곳이 한꺼번에 막혔을 때 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EA%B3%B5%EC%9E%A5-%ED%95%98%EC%88%98%EA%B5%AC-%EB%A7%89%ED%9E%98-%ED%95%B4%EA%B2%B0-%EC%88%9C%EC%84%9C/)
+- [세면기 교체 방법, 떼어 내기부터 배수 연결과 고정까지 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EC%84%B8%EB%A9%B4%EA%B8%B0-%EA%B5%90%EC%B2%B4-%EB%B0%A9%EB%B2%95/)
+- [업소용 온수기 고르는 법, 영업시간에 몰리는 온수량이 먼저입니다 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EC%97%85%EC%86%8C%EC%9A%A9-%EC%98%A8%EC%88%98%EA%B8%B0-%EA%B3%A0%EB%A5%B4%EB%8A%94-%EB%B2%95/)
+- [외출할 때 보일러 동파 방지 설정, 끄지 말고 외출 모드로 두세요 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EC%99%B8%EC%B6%9C%ED%95%A0-%EB%95%8C-%EB%B3%B4%EC%9D%BC%EB%9F%AC-%EB%8F%99%ED%8C%8C-%EB%B0%A9%EC%A7%80-%EC%84%A4%EC%A0%95/)
+- [욕실 3중 방수 필요한 경우, 아랫집 누수를 겪은 욕실이라면 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EC%9A%95%EC%8B%A4-3%EC%A4%91-%EB%B0%A9%EC%88%98-%ED%95%84%EC%9A%94%ED%95%9C-%EA%B2%BD%EC%9A%B0/)
 - [건식난방 습식난방 차이, 미장을 하느냐 안 하느냐에서 갈립니다 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EA%B1%B4%EC%8B%9D%EB%82%9C%EB%B0%A9-%EC%8A%B5%EC%8B%9D%EB%82%9C%EB%B0%A9-%EC%B0%A8%EC%9D%B4/)
 - [고압세척 필요한 경우, 뚫어도 다시 막힌다면 세척을 생각하세요 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EA%B3%A0%EC%95%95%EC%84%B8%EC%B2%99-%ED%95%84%EC%9A%94%ED%95%9C-%EA%B2%BD%EC%9A%B0/)
 - [기와 탈락 원인, 지붕 기와가 하나씩 떨어지는 집이라면 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EA%B8%B0%EC%99%80-%ED%83%88%EB%9D%BD-%EC%9B%90%EC%9D%B8/)
@@ -80,11 +85,6 @@
 - [연말 주방 하수구 기름 막힘, 명절 음식 뒤 싱크대가 막히는 이유 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EC%97%B0%EB%A7%90-%EC%A3%BC%EB%B0%A9-%ED%95%98%EC%88%98%EA%B5%AC-%EA%B8%B0%EB%A6%84-%EB%A7%89%ED%9E%98/)
 - [오래된 아파트 욕실 공사 주의점, 겉만 바꾸면 하자가 남습니다 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EC%98%A4%EB%9E%98%EB%90%9C-%EC%95%84%ED%8C%8C%ED%8A%B8-%EC%9A%95%EC%8B%A4-%EA%B3%B5%EC%82%AC-%EC%A3%BC%EC%9D%98%EC%A0%90/)
 - [전기온수기 용량 고르는 법, 한꺼번에 쓰는 양부터 세어 보세요 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EC%A0%84%EA%B8%B0%EC%98%A8%EC%88%98%EA%B8%B0-%EC%9A%A9%EB%9F%89-%EA%B3%A0%EB%A5%B4%EB%8A%94-%EB%B2%95/)
-- [건식난방 장단점, 미장 없이 까는 온수난방이 맞는 집은 따로 있습니다 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EA%B1%B4%EC%8B%9D%EB%82%9C%EB%B0%A9-%EC%9E%A5%EB%8B%A8%EC%A0%90/)
-- [겨울 욕실 공사 방수 건조, 추운 날 공사할 때 일정 잡는 법 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EA%B2%A8%EC%9A%B8-%EC%9A%95%EC%8B%A4-%EA%B3%B5%EC%82%AC-%EB%B0%A9%EC%88%98-%EA%B1%B4%EC%A1%B0/)
-- [겨울 집수리 미리 할 것, 한파 전에 점검하면 좋은 여섯 곳 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EA%B2%A8%EC%9A%B8-%EC%A7%91%EC%88%98%EB%A6%AC-%EB%AF%B8%EB%A6%AC-%ED%95%A0-%EA%B2%83/)
-- [겨울철 하수구 얼음 막힘 예방, 얼기 전에 해 둘 일 다섯 가지 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EA%B2%A8%EC%9A%B8%EC%B2%A0-%ED%95%98%EC%88%98%EA%B5%AC-%EC%96%BC%EC%9D%8C-%EB%A7%89%ED%9E%98-%EC%98%88%EB%B0%A9/)
-- [수도관 동파 예방법, 한파 오기 전에 이 네 곳을 막아 두세요 | 만능설비박사](https://xn--9h1bq9kg0b45cb8drua.kr/blog/%EC%88%98%EB%8F%84%EA%B4%80-%EB%8F%99%ED%8C%8C-%EC%98%88%EB%B0%A9%EB%B2%95/)
 
 ## 사이트맵
 - https://xn--9h1bq9kg0b45cb8drua.kr/sitemap.xml
